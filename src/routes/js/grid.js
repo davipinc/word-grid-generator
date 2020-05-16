@@ -3,8 +3,6 @@ const { xmur3, sfc32, shuffleArray } = require("./rng");
 const DEFAULT_SEED = 'foobar';
 
 function getGrid(dice = [], seedString = DEFAULT_SEED) {
-	console.info('Loaded dice: ', dice);
-
 	// Create xmur3 state:
 	const seed = xmur3(seedString);
 	

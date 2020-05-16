@@ -11,17 +11,19 @@
 }
 
 .box {
-  background-color: #444;
-  color: #fff;
-  border-radius: 5px;
-  padding: 20px;
-  font-size: 150%;
+  background-color: honeydew;
+  color: #02517c;
+  border-radius: 0.6em;
+  font-size: 300%;
+	width: 100px;
+	height: 100px;
+	font-family: Arial, Helvetica, sans-serif;
+	border: 2px solid #02517c;
 }
 
-.box:nth-child(even) {
-  background-color: #ccc;
-  color: #000;
-}
+/* .box:nth-child(even) {
+
+} */
 
 .wrapper {
 		width: 400px;
@@ -33,15 +35,24 @@
 
 <script context="module">
 	import { getGrid } from './js/grid.js';	
-	export async function preload() {
-		const resWords = await this.fetch('https://random-word-api.herokuapp.com/word?number=2&swear=0');
+	
+	export async function getWords(self) {
+		const useFetch = self ? self.fetch : fetch;
+		const resWords = await useFetch('https://random-word-api.herokuapp.com/word?number=2&swear=0');
 		let randomWords = await resWords.json();
+		console.info('Random words: ', randomWords);
+		return randomWords;
+	}
+ 
+	export async function preload() {
+		let randomWords = await getWords(this);
 		const resDice = await this.fetch(`dice/classic.json`);
 		let diceDefinition = await resDice.json();
+		console.info('Loaded dice: ', diceDefinition);
 		return {
 			randomWords,
 			diceDefinition
-		}
+		}	
 	}	
 </script>
 
@@ -53,11 +64,18 @@
 		}
 		return letter;
 	}
-	
+
 	export let randomWords;
 	export let diceDefinition;
 	export let seed = randomWords.join(' ');
 	export let grid = getGrid(diceDefinition.dice, seed);
+
+	export async function randomise() {
+		const words = await getWords();
+		console.log(words);
+		seed = words.join(' ');
+		grid = getGrid(diceDefinition.dice, seed)		
+	}
 
 </script>
 
@@ -66,7 +84,7 @@
 <section class="options">
 	<label>Seed: <input type="text" bind:value={seed} spellcheck="false" autocomplete="false"></label>
 	<button on:click={() => grid = getGrid(diceDefinition.dice, seed) }>Update</button>
-
+	<button on:click={() => randomise()}>Randomise</button>
 </section>
 
 
