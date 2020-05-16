@@ -32,7 +32,20 @@
 </style>
 
 <script context="module">
-	import { getGrid } from './js/grid.js';
+	import { getGrid } from './js/grid.js';	
+	export async function preload() {
+		const resWords = await this.fetch('https://random-word-api.herokuapp.com/word?number=2&swear=0');
+		let randomWords = await resWords.json();
+		const resDice = await this.fetch(`dice/classic.json`);
+		let diceDefinition = await resDice.json();
+		return {
+			randomWords,
+			diceDefinition
+		}
+	}	
+</script>
+
+<script>
 
 	function getLetter(letter) {
 		if (letter === 'Q') {
@@ -40,27 +53,22 @@
 		}
 		return letter;
 	}
-	export async function preload() {
-		const res = await this.fetch(`dice/classic.json`);
-		const diceDefinition = await res.json();
-		const grid = getGrid(diceDefinition.dice);
-		return {
-			grid,
-			getLetter
-		}
-	}	
-</script>
+	
+	export let randomWords;
+	export let diceDefinition;
+	export let seed = randomWords.join(' ');
+	export let grid = getGrid(diceDefinition.dice, seed);
 
-<script>
-	export let grid;
-	export let getLetter;
 </script>
 
 <h1>Game Grid</h1>
 
 <section class="options">
-	<label>Seed: <input type="text" value="apple"></label>
+	<label>Seed: <input type="text" bind:value={seed} spellcheck="false" autocomplete="false"></label>
+	<button on:click={() => grid = getGrid(diceDefinition.dice, seed) }>Update</button>
+
 </section>
+
 
 <section class="wrapper" role="grid">
 
