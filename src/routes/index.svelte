@@ -36,11 +36,11 @@
 	<title>Sapper project template</title>
 </svelte:head>
 
-<h1>Great success!</h1>
+<h1>Gridwords</h1>
 
 <figure>
-	<img alt='Success Kid' src='successkid.jpg'>
-	<figcaption>Have fun with Sapper!</figcaption>
+	<img alt='1980s Dictionary' src='dictionary.jpg'>
+	<figcaption>Old school word game</figcaption>
 </figure>
 
-<p><strong>Try editing this file (src/routes/index.svelte) to test live reloading.</strong></p>
+<p><a href="game">Start a new game</a> or adjust <a href="settings">settings</a></p>
