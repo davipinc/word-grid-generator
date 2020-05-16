@@ -47,15 +47,13 @@
 	}
  
 	export async function preload() {
-		let randomWords = await getWords(this);
 		const resDice = await this.fetch(`dice/classic.json`);
 		let diceDefinition = await resDice.json();
 		console.info('Loaded dice: ', diceDefinition);
 		return {
-			randomWords,
 			diceDefinition
 		}	
-	}	
+	}
 </script>
 
 <script>
@@ -67,7 +65,7 @@
 		return letter;
 	}
 
-	export let randomWords;
+	export let randomWords = [];
 	export let diceDefinition;
 	export let seed = randomWords.join(' ');
 	export let grid = getGrid(diceDefinition.dice, seed);
@@ -78,6 +76,18 @@
 		seed = words.join(' ');
 		grid = getGrid(diceDefinition.dice, seed)		
 	}
+
+	export async function getTheTime() {
+		const res = await fetch(`http://worldtimeapi.org/api/timezone/Europe/London`);
+		const timeDetails = await res.json();
+		return timeDetails;
+	}
+
+	getTheTime().then(timeDetails => {
+		const timeRoundedDownTenMinutes = `${timeDetails.utc_datetime.substring(0,15)}0`;
+		console.warn('Game Time', timeRoundedDownTenMinutes);
+		seed = timeRoundedDownTenMinutes;
+	});
 
 </script>
 
