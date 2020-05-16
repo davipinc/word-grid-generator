@@ -6,6 +6,10 @@
 
 /* https://gridbyexample.com/examples/example17/ */
 
+.options {
+	margin-bottom:1em;
+}
+
 .box {
   background-color: #444;
   color: #fff;
@@ -20,42 +24,52 @@
 }
 
 .wrapper {
-		width: 500px;
+		width: 400px;
 		display: grid;
 		grid-gap: 10px;
-		grid-template-columns: repeat(5, 100px);
+		grid-template-columns: repeat(4, 100px);
 }
 </style>
 
 <script context="module">
 	import { getGrid } from './js/grid.js';
 
+	function getLetter(letter) {
+		if (letter === 'Q') {
+			return 'Qu';
+		}
+		return letter;
+	}
 	export async function preload() {
 		const res = await this.fetch(`dice/classic.json`);
 		const diceDefinition = await res.json();
 		const grid = getGrid(diceDefinition.dice);
 		return {
-			grid
+			grid,
+			getLetter
 		}
 	}	
 </script>
 
 <script>
 	export let grid;
+	export let getLetter;
 </script>
 
 <h1>Game Grid</h1>
 
-<label>Seed: <input type="text" value="apple"></label>
+<section class="options">
+	<label>Seed: <input type="text" value="apple"></label>
+</section>
 
-<div class="wrapper" role="grid">
+<section class="wrapper" role="grid">
 
 	{#each grid as row}
 
 		{#each row as cell}
-		<button class="box" role="gridcell">{cell}</button>
+		<button class="box" role="gridcell">{getLetter(cell)}</button>
 		{/each}
 	
 	{/each}
 
-</div>
+</section>

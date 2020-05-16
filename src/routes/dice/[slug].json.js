@@ -8,8 +8,8 @@ const diceTypes = {
 
 export function get(req, res, next) {
 	const { slug } = req.params;
-	console.log('slug', slug);
-	console.log(diceTypes[slug]);
+	console.log('dice mode', slug);
+	// console.log(diceTypes[slug]);
 
 	if (diceTypes[slug]) {
 		res.writeHead(200, {
