@@ -46,34 +46,16 @@
 
 <h1>Game Grid</h1>
 
+<label>Seed: <input type="text" value="apple"></label>
+
 <div class="wrapper" role="grid">
-	<button class="box" role="gridcell">{grid[0][0]}</button>
-	<button class="box" role="gridcell">{grid[0][1]}</button>
-	<button class="box" role="gridcell">{grid[0][2]}</button>
-	<button class="box" role="gridcell">{grid[0][3]}</button>
-	<button class="box" role="gridcell">{grid[0][4]}</button>
 
-	<button class="box" role="gridcell">{grid[1][0]}</button>
-	<button class="box" role="gridcell">{grid[1][1]}</button>
-	<button class="box" role="gridcell">{grid[1][2]}</button>
-	<button class="box" role="gridcell">{grid[1][3]}</button>
-	<button class="box" role="gridcell">{grid[1][4]}</button>
+	{#each grid as row}
 
-	<button class="box" role="gridcell">{grid[2][0]}</button>
-	<button class="box" role="gridcell">{grid[2][1]}</button>
-	<button class="box" role="gridcell">{grid[2][2]}</button>
-	<button class="box" role="gridcell">{grid[2][3]}</button>
-	<button class="box" role="gridcell">{grid[2][4]}</button>
+		{#each row as cell}
+		<button class="box" role="gridcell">{cell}</button>
+		{/each}
+	
+	{/each}
 
-	<button class="box" role="gridcell">{grid[3][0]}</button>
-	<button class="box" role="gridcell">{grid[3][1]}</button>
-	<button class="box" role="gridcell">{grid[3][2]}</button>
-	<button class="box" role="gridcell">{grid[3][3]}</button>
-	<button class="box" role="gridcell">{grid[3][4]}</button>
-
-	<button class="box" role="gridcell">{grid[4][0]}</button>
-	<button class="box" role="gridcell">{grid[4][1]}</button>
-	<button class="box" role="gridcell">{grid[4][2]}</button>
-	<button class="box" role="gridcell">{grid[4][3]}</button>
-	<button class="box" role="gridcell">{grid[4][4]}</button>
 </div>
