@@ -69,7 +69,20 @@
 	width: 90%;
 	display: grid;
 	grid-gap: 1%;
-	grid-template-columns: repeat(4, 25%);
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr 1fr;
+}
+
+.action {
+  grid-row: 5; 
+}
+
+.action-left {
+  grid-column: 1/3; 
+}
+
+.action-right {
+  grid-column: 3/5; 
 }
 
 .words {
@@ -254,8 +267,8 @@ textarea {
 	
 	{/each}
 
-	<button class="button cancel" role="button" aria-label="Cancel word" on:click={clearWord}>Cancel</button>
-	<button class="button add" role="button" aria-label="Add word" on:click={addWord}>Add</button>
+	<button class="button action action-left cancel" role="button" aria-label="Cancel word" on:click={clearWord}>Cancel</button>
+	<button class="button action action-right add" role="button" aria-label="Add word" on:click={addWord}>Add</button>
 
 </section>
 
