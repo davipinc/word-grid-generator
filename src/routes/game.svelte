@@ -77,6 +77,10 @@
 		grid = getGrid(diceDefinition.dice, seed)		
 	}
 
+	export function update() {
+		grid = getGrid(diceDefinition.dice, seed);
+	}
+
 	export async function getTheTime() {
 		const res = await fetch(`https://worldtimeapi.org/api/timezone/Europe/London`);
 		const timeDetails = await res.json();
@@ -87,13 +91,14 @@
 		const timeRoundedDownTenMinutes = `${timeDetails.utc_datetime.substring(0,15)}0`;
 		console.warn('Game Time', timeRoundedDownTenMinutes);
 		seed = timeRoundedDownTenMinutes;
+		update();
 	});
 
 </script>
 
 <section class="options">
 	<label>Seed: <input type="text" class="seed" bind:value={seed} spellcheck="false" autocomplete="false"></label>
-	<button on:click={() => grid = getGrid(diceDefinition.dice, seed) }>Update</button>
+	<button on:click={() => update()}>Update</button>
 	<button on:click={() => randomise()}>Randomise</button>
 </section>
 
