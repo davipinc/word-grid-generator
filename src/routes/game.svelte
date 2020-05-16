@@ -120,7 +120,8 @@ textarea {
 	export let grid = getGrid(diceDefinition.dice, seed);
 
 	function reset() {
-		allWords = '';		
+		allWords = '';
+		currentWordMap = {};		
 	}
 	function onKeyDown(event) {
 		if (event.code ==='Enter') {
