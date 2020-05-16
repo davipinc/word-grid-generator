@@ -40,7 +40,7 @@
 	
 	export async function getWords(self) {
 		const useFetch = self ? self.fetch : fetch;
-		const resWords = await useFetch('https://random-word-api.herokuapp.com/word?number=2&swear=0');
+		const resWords = await useFetch('https://random-word-api.herokuapp.com/word?number=1&swear=0');
 		let randomWords = await resWords.json();
 		console.info('Random words: ', randomWords);
 		return randomWords;
