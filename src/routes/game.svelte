@@ -92,7 +92,7 @@
 	{#each grid as row}
 
 		{#each row as cell}
-		<button class="box">{getLetter(cell)}</button>
+		<button class="box" role="button">{getLetter(cell)}</button>
 		{/each}
 	
 	{/each}
