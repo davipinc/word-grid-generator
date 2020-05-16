@@ -23,6 +23,18 @@
 	border: 1% solid #02517c;
 }
 
+.box:hover {
+	background-color: #246588;
+	color:white;
+}
+
+.box:focus {
+	background-color: darkgreen;
+	color: white;
+}
+
+
+
 /* .box:nth-child(even) {
 
 } */
