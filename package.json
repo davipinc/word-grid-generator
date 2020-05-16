@@ -1,5 +1,5 @@
 {
-  "name": "Word Grid Generator",
+  "name": "word-grid-generator",
   "description": "Generates simple letter grids based on random seeds",
   "version": "0.0.1",
   "scripts": {
