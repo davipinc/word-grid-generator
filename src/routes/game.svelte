@@ -10,15 +10,17 @@
 	margin-bottom:1em;
 }
 
+.seed {
+	width: 35%;
+}
 .box {
   background-color: honeydew;
   color: #02517c;
-  border-radius: 0.6em;
-  font-size: 300%;
-	width: 100px;
-	height: 100px;
+  border-radius: 0.3em;
+  font-size: 6vmax;
+	height: 9vmax;
 	font-family: Arial, Helvetica, sans-serif;
-	border: 2px solid #02517c;
+	border: 1% solid #02517c;
 }
 
 /* .box:nth-child(even) {
@@ -26,10 +28,10 @@
 } */
 
 .wrapper {
-		width: 400px;
+		width: 90%;
 		display: grid;
-		grid-gap: 10px;
-		grid-template-columns: repeat(4, 100px);
+		grid-gap: 4%;
+		grid-template-columns: repeat(4, 25%);
 }
 </style>
 
@@ -79,21 +81,18 @@
 
 </script>
 
-<h1>Game Grid</h1>
-
 <section class="options">
-	<label>Seed: <input type="text" bind:value={seed} spellcheck="false" autocomplete="false"></label>
+	<label>Seed: <input type="text" class="seed" bind:value={seed} spellcheck="false" autocomplete="false"></label>
 	<button on:click={() => grid = getGrid(diceDefinition.dice, seed) }>Update</button>
 	<button on:click={() => randomise()}>Randomise</button>
 </section>
-
 
 <section class="wrapper" role="grid">
 
 	{#each grid as row}
 
 		{#each row as cell}
-		<button class="box" role="gridcell">{getLetter(cell)}</button>
+		<button class="box">{getLetter(cell)}</button>
 		{/each}
 	
 	{/each}
