@@ -1,0 +1,23 @@
+{
+  "$schema": "./dice.schema.json",
+  "type": "classic",
+  "name": "Classic (1976-1986)",
+  "dice": [
+    "AACIOT",
+    "ABILTY",
+    "ABJMOQ",
+    "ACDEMP",
+    "ACELRS",
+    "ADENVZ",
+    "AHMORS",
+    "BIFORX",
+    "DENOSW",
+    "DKNOTU",
+    "EEFHIY",
+    "EGKLUY",
+    "EGINTV",
+    "EHINPS",
+    "ELPSTU",
+    "GILRUW"
+  ]
+}

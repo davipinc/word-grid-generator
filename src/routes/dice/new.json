@@ -1,0 +1,23 @@
+{
+  "$schema": "./dice.schema.json",
+  "type": "new",
+  "name": "New (1987-2008)",
+  "dice": [
+    "AAEEGN",
+    "ABBJOO",
+    "ACHOPS",
+    "AFFKPS",
+    "AOOTTW",
+    "CIMOTU",
+    "DEILRX",
+    "DELRVY",
+    "DISTTY",
+    "EEGHNW",
+    "EEINSU",
+    "EHRTVW",
+    "EIOSST",
+    "ELRTTY",
+    "HIMNUQ",
+    "HLNNRZ"
+  ]
+}
