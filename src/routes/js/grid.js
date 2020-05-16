@@ -2,14 +2,19 @@ const { xmur3, sfc32, shuffleArray } = require("./rng");
 
 const DEFAULT_SEED = 'foobar';
 
+function simplifyString(seedString) {
+	return seedString.toLowerCase().replace(/\s+/g, '-');
+}
+
 function getGrid(dice = [], seedString = DEFAULT_SEED) {
 	// Create xmur3 state:
-	const seed = xmur3(seedString);
+	const simplerSeedString = simplifyString(seedString);
+	const seed = xmur3(simplerSeedString);
 	
 	// Output four 32-bit hashes to provide the seed for sfc32.
 	const rand = sfc32(seed(), seed(), seed(), seed());
 
-	console.info('SEED:', seedString);
+	console.info('SEED:', simplerSeedString);
 
 	// order the dice
 	const shuffledDice = shuffleArray(dice, rand());
@@ -17,7 +22,7 @@ function getGrid(dice = [], seedString = DEFAULT_SEED) {
 	const classicUsingDefaultSeed = shuffledDice[0] === 'AHMORS';
 	const newUsingDefaultSeed = shuffledDice[0] === 'DEILRX';
 
-	if (seedString === DEFAULT_SEED && !classicUsingDefaultSeed && !newUsingDefaultSeed) {
+	if (simplerSeedString === DEFAULT_SEED && !classicUsingDefaultSeed && !newUsingDefaultSeed) {
 		console.warn('Something is wrong with the random number seed');
 	}
 
