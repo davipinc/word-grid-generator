@@ -43,7 +43,7 @@ function shuffleArray(sourceArray, randomNumber) {
       const j = Math.floor(randomNumber * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
   }
-  return array.reverse();
+  return array;
 }
 
 module.exports = {
