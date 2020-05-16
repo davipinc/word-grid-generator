@@ -18,6 +18,11 @@
   height: 7vmax;
 	font-family: Arial, Helvetica, sans-serif;
 	border: 1% solid #02517c;
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;	
 }
 
 .cell {
@@ -26,15 +31,19 @@
 	color: #02517c;
 }
 
-.button:hover {
-	background-color: #246588;
-	color:white;
+.chosen {
+	background-color: black;
+	color: white;
 }
 
+.button:hover {
+	opacity: 0.8;
+}
+/* 
 .button:focus {
 	background-color: #02517c;
 	color: honeydew;
-}
+} */
 
 .button {
 	font-size: 4vmax;
@@ -54,9 +63,7 @@
 
 } */
 
-.buttons {
-	margin-top: 0.5em;
-}
+
 
 .wrapper {
 	width: 90%;
@@ -65,8 +72,8 @@
 	grid-template-columns: repeat(4, 25%);
 }
 
-.currentWord {
-	font-size:2vmax;
+.words {
+	margin-top: 1vmax;
 }
 
 textarea {
@@ -109,10 +116,12 @@ textarea {
 	export let randomWords = [];
 	export let diceDefinition;
 	export let seed = randomWords.join(' ');
-	export let currentWord = '';
 
 	export let grid = getGrid(diceDefinition.dice, seed);
 
+	function reset() {
+		allWords = '';		
+	}
 	function onKeyDown(event) {
 		if (event.code ==='Enter') {
 			event.preventDefault();
@@ -122,12 +131,18 @@ textarea {
 	}
 
 	export function clearWord() {
-		currentWord = '';
+		currentWordMap = {};
 	}
 
 	let allWords = '';
+	let currentWordMap = {};
 
-	export function addWord() {
+	function getCurrentWord() {
+		return Object.keys(currentWordMap).map( key => currentWordMap[key].letter ).join('');
+	}
+
+	function addWord() {
+		const currentWord = getCurrentWord();
 		if (!currentWord){
 			return;
 		}
@@ -135,20 +150,65 @@ textarea {
 		clearWord();
 	}
 
-	export async function randomise() {
+	async function randomise() {
+		reset();
 		const words = await getWords();
 		console.log(words);
 		seed = words.join(' ');
 		grid = getGrid(diceDefinition.dice, seed)		
 	}
 
-	export function update() {
+	function update() {
 		grid = getGrid(diceDefinition.dice, seed);
 	}
 
-	export function addLetterToCurrentWord(event) {
-		const letter = event.srcElement.innerText;
-		currentWord += letter.toLowerCase();
+	function row(location) {
+		if (!location) {return -1;}
+		return parseInt(location.split(':')[0], 10);
+	}
+
+	function col(location) {
+		if (!location) {return -1;}
+		return parseInt(location.split(':')[1], 10);
+	}
+
+	function getMap() {
+		return Object.keys(currentWordMap).filter( key => currentWordMap[key] !== undefined)		
+	}
+
+	export function toggleLetter(event) {
+		const element = event.srcElement;
+		const letter = element.innerText;
+		const location = element.dataset.location;
+		const elementsSelected = getMap().length;
+		const cellAlreadyLit = !!currentWordMap[location];
+		
+		// apply rules
+		if (elementsSelected > 0) {
+			const lastElementIndex = elementsSelected-1;
+			const lastElementLocation = getMap().filter( key => currentWordMap[key].index === lastElementIndex)[0];
+			const withinOneRow = row(lastElementLocation) === row(location) || row(lastElementLocation) === row(location) + 1 || row(lastElementLocation) === row(location) - 1;
+			const withinOneCol = col(lastElementLocation) === col(location) || col(lastElementLocation) === col(location) + 1 || col(lastElementLocation) === col(location) - 1;
+
+			if (!withinOneRow || !withinOneCol) {
+				console.warn('Not a valid move', lastElementLocation, location);
+				return;
+			}
+
+			if (cellAlreadyLit && currentWordMap[location].index !== lastElementIndex) {
+				console.warn('Can only remove the last chosen letter');
+				return;
+			}
+		}
+
+		if (cellAlreadyLit){
+			currentWordMap[location] = undefined; // NOTE: you must not delete the element before setting undefined or the element does not react
+			delete currentWordMap[location];
+		} else {
+			currentWordMap[location] = { letter, index: elementsSelected };
+		}
+
+		console.log(currentWordMap);
 	}
 
 	import { onMount } from 'svelte';
@@ -169,6 +229,7 @@ textarea {
 	}
 
 	onMount(async () => {
+		reset();
 		getGameFromCurrentTime();
 	});	
 	
@@ -176,32 +237,28 @@ textarea {
 
 <section class="options">
 	<label>Seed: <input type="text" class="seed" bind:value={seed} spellcheck="false" autocomplete="false" on:keydown={event => onKeyDown(event)}></label>
-	<!-- <button on:click={update}>Update</button> -->
 	<button on:click={getGameFromCurrentTime}>Current</button>
 	<button on:click={randomise}>Random</button>
 </section>
 
 <section class="wrapper">
 
-	{#each grid as row}
+	{#each grid as row, rowIndex}
 
-		{#each row as cell}
-		<button class="button cell" role="button" aria-label="{getLetter(cell).toLowerCase()}" on:click={value => addLetterToCurrentWord(value)}>
+		{#each row as cell, cellIndex}
+		<button class="button cell {currentWordMap[rowIndex + ':' + cellIndex] ? 'chosen' : '' }" data-location="{rowIndex + ':' + cellIndex}" role="button" aria-label="{getLetter(cell).toLowerCase()}" on:click={value => toggleLetter(value)}>
 			{getLetter(cell)}
 		</button>
 		{/each}
 	
 	{/each}
 
-</section>
-
-<section class="buttons">
 	<button class="button cancel" role="button" aria-label="Cancel word" on:click={clearWord}>Cancel</button>
 	<button class="button add" role="button" aria-label="Add word" on:click={addWord}>Add</button>
+
 </section>
 
+
 <section class="words">
-	<input type="text" class="currentWord" bind:value={currentWord} spellcheck="false" autocomplete="false" placeholder="">
-	<br>
 	<textarea aria-label="Your word list" bind:value={allWords} placeholder="Your words"></textarea>
 </section>
