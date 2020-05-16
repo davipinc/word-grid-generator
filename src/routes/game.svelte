@@ -87,7 +87,7 @@
 	<button on:click={() => randomise()}>Randomise</button>
 </section>
 
-<section class="wrapper" role="grid">
+<section class="wrapper">
 
 	{#each grid as row}
 
