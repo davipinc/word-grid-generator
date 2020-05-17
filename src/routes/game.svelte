@@ -89,7 +89,7 @@ textarea {
 	import { words, board, grid, dice, seed, tabIndexes } from '../js/stores.js';
 	import { seedKeyDown, cellKeyDown } from '../js/key.js';
 	import { init, reset, getGameFromCurrentTime, getGameFromRandomWords } from '../js/game.js';
-	import { clearWord, addWord, updateLocation, toggleLetter, BUTTON_MAX_INDEX } from '../js/board.js';
+	import { clearWord, addWord, updateLocation, toggleLetter, getCurrentWord, BUTTON_MAX_INDEX } from '../js/board.js';
 	import { getLetter } from '../js/util.js';
 
 	onMount(init);
@@ -112,7 +112,13 @@ textarea {
 			data-location="{rowIndex + ':' + cellIndex}"
 			role="button"
 			tabindex="{$tabIndexes[rowIndex + ':' + cellIndex] || 0}"
-			aria-label="{getLetter(cell).toLowerCase() + ' ' + ($tabIndexes[rowIndex + ':' + cellIndex] === BUTTON_MAX_INDEX ? '(last letter selected)' : '')}"
+			aria-label="{
+					'Letter ' + getLetter(cell).toLowerCase() + ' ' + 
+					($board[rowIndex + ':' + cellIndex] && $tabIndexes[rowIndex + ':' + cellIndex] === BUTTON_MAX_INDEX ? '(last letter selected)' : '') + '. ' + 
+					(getCurrentWord($board).length <= 1 ? '' : 
+							' Letters are ' + getCurrentWord($board).split('').join('. ') + '. Word is ' + getCurrentWord($board).toLowerCase()
+					)
+			}"
 			aria-hidden="{$tabIndexes[rowIndex + ':' + cellIndex] === -1}"
 			on:click={event => toggleLetter(event, $board)}
 			on:keydown={event => cellKeyDown(event)}>

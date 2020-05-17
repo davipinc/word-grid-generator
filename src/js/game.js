@@ -66,6 +66,7 @@ export function getGrid(dice = [], seedString = DEFAULT_SEED) {
 	
 export function getGameFromCurrentTime($dice) {
 	getTheTime().then(timeDetails => {
+		reset();
 		const timeRoundedDownTenMinutes = `${timeDetails.utc_datetime.substring(0,15)}0`;
 		console.info('Game Time', timeRoundedDownTenMinutes);
 		seed.set(timeRoundedDownTenMinutes);
@@ -74,7 +75,7 @@ export function getGameFromCurrentTime($dice) {
 }
 
 export async function getGameFromRandomWords($dice) {
-	// reset();
+	reset();
 	const words = await getWords();
 	const newSeed = words.join(' ');
 	seed.set(newSeed);

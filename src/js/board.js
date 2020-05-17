@@ -10,7 +10,7 @@ export function clearWord() {
   board.set({});
 }
 
-function getCurrentWord($board) {
+export function getCurrentWord($board) {
   return Object.keys($board).map( key => $board[key].letter ).join('');
 }
 
