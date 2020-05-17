@@ -136,12 +136,17 @@ textarea {
 		allWords = '';
 		currentWordMap = {};		
 	}
-	function onKeyDown(event) {
+
+	function seedKeyDown(event) {
 		if (event.code ==='Enter') {
 			event.preventDefault();
 		}
 
 		update();
+	}
+
+	function cellKeyDown(event) {
+		console.log(event.code);
 	}
 
 	export function clearWord() {
@@ -157,10 +162,19 @@ textarea {
 
 	function addWord() {
 		const currentWord = getCurrentWord();
+		const SPACER = ', ';
 		if (!currentWord){
 			return;
 		}
-		allWords = currentWord + '\n' + allWords;
+
+		const alreadyLogged = allWords === currentWord || allWords.indexOf(SPACER + currentWord) >= 0;
+		
+		if (alreadyLogged) {
+			console.info('Already found', currentWord);
+			return;
+		}
+
+		allWords = allWords + (allWords ? SPACER : '') + currentWord;
 		clearWord();
 	}
 
@@ -250,7 +264,7 @@ textarea {
 </script>
 
 <section class="options">
-	<label>Seed: <input type="text" class="seed" bind:value={seed} spellcheck="false" autocomplete="false" on:keydown={event => onKeyDown(event)}></label>
+	<label>Seed: <input type="text" class="seed" bind:value={seed} spellcheck="false" autocomplete="false" on:keydown={event => seedKeyDown(event)}></label>
 	<button on:click={getGameFromCurrentTime}>Current</button>
 	<button on:click={randomise}>Random</button>
 </section>
@@ -260,7 +274,13 @@ textarea {
 	{#each grid as row, rowIndex}
 
 		{#each row as cell, cellIndex}
-		<button class="button cell {currentWordMap[rowIndex + ':' + cellIndex] ? 'chosen' : '' }" data-location="{rowIndex + ':' + cellIndex}" role="button" aria-label="{getLetter(cell).toLowerCase()}" on:click={value => toggleLetter(value)}>
+		<button 
+			class="button cell {currentWordMap[rowIndex + ':' + cellIndex] ? 'chosen' : '' }"
+			data-location="{rowIndex + ':' + cellIndex}"
+			role="button"
+			aria-label="{getLetter(cell).toLowerCase()}"
+			on:click={value => toggleLetter(value)}
+			on:keydown={event => cellKeyDown(event)}>
 			{getLetter(cell)}
 		</button>
 		{/each}
@@ -274,5 +294,5 @@ textarea {
 
 
 <section class="words">
-	<textarea aria-label="Your word list" bind:value={allWords} placeholder="Your words"></textarea>
+	<textarea aria-label="Your word list" bind:value={allWords} placeholder="Your words" autocompete="false"></textarea>
 </section>
