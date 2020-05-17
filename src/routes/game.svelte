@@ -118,6 +118,11 @@ textarea {
 </script>
 
 <script>
+	import { words } from './js/stores.js';
+
+	words.subscribe(value => {
+		console.info('Updated words:', value);
+	});
 
 	function getLetter(letter) {
 		if (letter === 'Q') {
@@ -133,7 +138,7 @@ textarea {
 	export let grid = getGrid(diceDefinition.dice, seed);
 
 	function reset() {
-		allWords = '';
+		words.set('');
 		currentWordMap = {};		
 	}
 
@@ -153,7 +158,6 @@ textarea {
 		currentWordMap = {};
 	}
 
-	let allWords = '';
 	let currentWordMap = {};
 
 	function getCurrentWord() {
@@ -167,14 +171,18 @@ textarea {
 			return;
 		}
 
-		const alreadyLogged = allWords === currentWord || allWords.indexOf(SPACER + currentWord) >= 0;
+		words.update(contents => {
+			const alreadyLogged = contents === currentWord || contents.indexOf(SPACER + currentWord) >= 0;
 		
-		if (alreadyLogged) {
-			console.info('Already found', currentWord);
-			return;
-		}
+			if (alreadyLogged) {
+				console.info('Already found', currentWord);
+				return;
+			}
 
-		allWords = allWords + (allWords ? SPACER : '') + currentWord.toUpperCase();
+			return contents + (contents.length ? SPACER : '') + currentWord.toUpperCase();
+		});
+
+
 		clearWord();
 	}
 
@@ -259,7 +267,7 @@ textarea {
 	onMount(async () => {
 		reset();
 		getGameFromCurrentTime();
-	});	
+	});
 	
 </script>
 
@@ -294,5 +302,7 @@ textarea {
 
 
 <section class="words">
-	<textarea aria-label="Your word list" bind:value={allWords} placeholder="Your words" autocompete="false"></textarea>
+	<textarea aria-label="Your word list" bind:value={$words} placeholder="Your words" autocompete="false"></textarea>
 </section>
+
+<!-- <input value={$words}> -->
