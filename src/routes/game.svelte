@@ -120,15 +120,12 @@ textarea {
 <script>
 	import { words, board, grid, dice, seed } from '../js/stores.js';
 	import { seedKeyDown, cellKeyDown } from '../js/key.js';
-	import { reset, clearWord, addWord } from '../js/board.js';
+	import { reset, update, clearWord, addWord } from '../js/board.js';
 	import { getLetter } from '../js/util.js';
 	import { logStateUpdates } from '../js/log.js';
 
 	logStateUpdates();
 
-	export function update() {
-		grid.set(getGrid($dice, $seed));
-	}
 
 	export let randomWords = [];
 	export let diceDefinition;
@@ -137,8 +134,7 @@ textarea {
 
 	dice.set(diceDefinition.dice);
 
-	update();
-
+	update($dice, $seed);
 
 	function updateLocation(location, value) {
 		board.update(board => {
@@ -220,7 +216,7 @@ textarea {
 			const timeRoundedDownTenMinutes = `${timeDetails.utc_datetime.substring(0,15)}0`;
 			console.info('Game Time', timeRoundedDownTenMinutes);
 			seed.set(timeRoundedDownTenMinutes);
-			update();
+			update($dice, timeRoundedDownTenMinutes);
 		});
 	}
 

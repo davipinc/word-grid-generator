@@ -1,4 +1,4 @@
-const { xmur3, sfc32, shuffleArray } = require("./rng");
+import { xmur3, sfc32, shuffleArray } from './rng.js'; 
 
 const DEFAULT_SEED = 'foobar';
 
@@ -6,7 +6,7 @@ function simplifyString(seedString) {
 	return seedString.toLowerCase().replace(/\s+/g, '-');
 }
 
-function getGrid(dice = [], seedString = DEFAULT_SEED) {
+export function getGrid(dice = [], seedString = DEFAULT_SEED) {
 	// Create xmur3 state:
 	const simplerSeedString = simplifyString(seedString);
 	const seed = xmur3(simplerSeedString);
@@ -41,7 +41,3 @@ function getGrid(dice = [], seedString = DEFAULT_SEED) {
 	
 	return arrayOfArrays;
 }
-
-module.exports = {
-	getGrid
-};

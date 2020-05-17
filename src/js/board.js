@@ -7,6 +7,10 @@ export function reset() {
   grid.set([]);		
 }
 
+export function update($dice, $seed) {
+  grid.set(getGrid($dice, $seed));
+}
+
 export function clearWord() {
   board.set({});
 }
