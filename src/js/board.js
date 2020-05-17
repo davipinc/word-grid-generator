@@ -53,7 +53,14 @@ export function updateLocation(location, value) {
 
   tabIndexes.update(tabIndexMap => {
     console.log('tabIndexMap', tabIndexMap);
-    const board = {};
+    Object.keys(tabIndexMap).forEach( location => {
+      tabIndexMap[location] = 0;
+    });
+    for (let r = 0; r < maxRows; r += 1) {
+      for (let c = 0; c < maxCols; c += 1) {
+        tabIndexMap[getLocation(r,c)] = -1;
+      }  
+    }
     
     const tabIndexArray = [
       getLocation( row(location),  col(location)), // SELECTED

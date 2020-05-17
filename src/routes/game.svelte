@@ -113,6 +113,7 @@ textarea {
 			role="button"
 			tabindex="{$tabIndexes[rowIndex + ':' + cellIndex] || 0}"
 			aria-label="{getLetter(cell).toLowerCase()}"
+			aria-hidden="{$tabIndexes[rowIndex + ':' + cellIndex] === -1}"
 			on:click={event => toggleLetter(event, $board)}
 			on:keydown={event => cellKeyDown(event)}>
 			{getLetter(cell)}
