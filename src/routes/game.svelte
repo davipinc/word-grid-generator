@@ -98,7 +98,7 @@ textarea {
 </style>
 
 <script context="module">
-	import { getGrid } from './js/grid.js';	
+	import { getGrid } from '../js/grid.js';	
 	
 	export async function getWords(self) {
 		const resWords = await fetch('https://random-word-api.herokuapp.com/word?number=1&swear=0');
@@ -118,9 +118,9 @@ textarea {
 </script>
 
 <script>
-	import { words, board } from './js/stores.js';
-	import { reset } from './js/board.js';
-	import { getLetter } from './js/util.js';
+	import { words, board } from '../js/stores.js';
+	import { reset } from '../js/board.js';
+	import { getLetter } from '../js/util.js';
 
 	words.subscribe(value => {
 		console.info('Updated words:', value);
