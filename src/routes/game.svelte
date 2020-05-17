@@ -118,29 +118,25 @@ textarea {
 </script>
 
 <script>
-	import { words } from './js/stores.js';
+	import { words, board } from './js/stores.js';
+	import { reset } from './js/board.js';
+	import { getLetter } from './js/util.js';
 
 	words.subscribe(value => {
 		console.info('Updated words:', value);
 	});
+	
+	board.subscribe(value => {
+		console.info('Updated board:', value);
+	});
 
-	function getLetter(letter) {
-		if (letter === 'Q') {
-			return 'Qu';
-		}
-		return letter;
-	}
+	import { writable, derived } from 'svelte/store';
 
 	export let randomWords = [];
 	export let diceDefinition;
 	export let seed = randomWords.join(' ');
 
 	export let grid = getGrid(diceDefinition.dice, seed);
-
-	function reset() {
-		words.set('');
-		currentWordMap = {};		
-	}
 
 	function seedKeyDown(event) {
 		if (event.code ==='Enter') {
@@ -155,13 +151,12 @@ textarea {
 	}
 
 	export function clearWord() {
-		currentWordMap = {};
+		board.set({});
 	}
 
-	let currentWordMap = {};
 
 	function getCurrentWord() {
-		return Object.keys(currentWordMap).map( key => currentWordMap[key].letter ).join('');
+		return Object.keys($board).map( key => $board[key].letter ).join('');
 	}
 
 	function addWord() {
@@ -184,6 +179,17 @@ textarea {
 
 
 		clearWord();
+	}
+
+	function updateLocation(location, value) {
+		board.update(board => {
+			if (!value) {
+				delete board[location];
+			} else {
+				board[location] = value;
+			}
+			return board;
+		});
 	}
 
 	async function randomise() {
@@ -209,7 +215,7 @@ textarea {
 	}
 
 	function getMap() {
-		return Object.keys(currentWordMap).filter( key => currentWordMap[key] !== undefined)		
+		return Object.keys($board).filter( key => $board[key] !== undefined)		
 	}
 
 	export function toggleLetter(event) {
@@ -217,12 +223,12 @@ textarea {
 		const letter = element.innerText;
 		const location = element.dataset.location;
 		const elementsSelected = getMap().length;
-		const cellAlreadyLit = !!currentWordMap[location];
+		const cellAlreadyLit = !!$board[location];
 		
 		// apply rules
 		if (elementsSelected > 0) {
 			const lastElementIndex = elementsSelected-1;
-			const lastElementLocation = getMap().filter( key => currentWordMap[key].index === lastElementIndex)[0];
+			const lastElementLocation = getMap().filter( key => $board[key].index === lastElementIndex)[0];
 			const withinOneRow = row(lastElementLocation) === row(location) || row(lastElementLocation) === row(location) + 1 || row(lastElementLocation) === row(location) - 1;
 			const withinOneCol = col(lastElementLocation) === col(location) || col(lastElementLocation) === col(location) + 1 || col(lastElementLocation) === col(location) - 1;
 
@@ -231,20 +237,19 @@ textarea {
 				return;
 			}
 
-			if (cellAlreadyLit && currentWordMap[location].index !== lastElementIndex) {
+			if (cellAlreadyLit && $board[location].index !== lastElementIndex) {
 				console.warn('Can only remove the last chosen letter');
 				return;
 			}
 		}
 
 		if (cellAlreadyLit){
-			currentWordMap[location] = undefined; // NOTE: you must not delete the element before setting undefined or the element does not react
-			delete currentWordMap[location];
+			updateLocation(location, null);
 		} else {
-			currentWordMap[location] = { letter, index: elementsSelected };
+			updateLocation(location, { letter, index: elementsSelected });
 		}
 
-		console.log(currentWordMap);
+		console.log($board);
 	}
 
 	import { onMount } from 'svelte';
@@ -283,7 +288,7 @@ textarea {
 
 		{#each row as cell, cellIndex}
 		<button 
-			class="button cell {currentWordMap[rowIndex + ':' + cellIndex] ? 'chosen' : '' }"
+			class="button cell {$board[rowIndex + ':' + cellIndex] ? 'chosen' : '' }"
 			data-location="{rowIndex + ':' + cellIndex}"
 			role="button"
 			aria-label="{getLetter(cell).toLowerCase()}"
@@ -305,4 +310,5 @@ textarea {
 	<textarea aria-label="Your word list" bind:value={$words} placeholder="Your words" autocompete="false"></textarea>
 </section>
 
-<!-- <input value={$words}> -->
+<!-- <input value={JSON.stringify($board['0:0'])}>
+<input value={JSON.stringify($board)}> -->
