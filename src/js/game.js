@@ -73,7 +73,8 @@ export function getGameFromCurrentTime($dice) {
 		const timeRoundedDownTenMinutes = `${timeDetails.utc_datetime.substring(0,15)}0`;
 		console.info('Game Time', timeRoundedDownTenMinutes);
 		seed.set(timeRoundedDownTenMinutes);
-		update($dice, timeRoundedDownTenMinutes);
+		grid.set(getGrid($dice, timeRoundedDownTenMinutes));
+		// update($dice, timeRoundedDownTenMinutes);
 	});
 }
 
@@ -82,5 +83,6 @@ export async function getGameFromRandomWords($dice) {
 	const words = await getWords();
 	const newSeed = words.join(' ');
 	seed.set(newSeed);
-	grid.set(getGrid($dice, newSeed));		
+	grid.set(getGrid($dice, newSeed));
+	// update($dice, newSeed);
 }

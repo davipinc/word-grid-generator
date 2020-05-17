@@ -1,11 +1,12 @@
-// import { update } from './board.js';
+import { getGrid } from './game.js';
+import { grid } from './stores.js';
 
-export function seedKeyDown(event) {
+export function seedKeyDown(event, $dice, $seed) {
   if (event.code ==='Enter') {
     event.preventDefault();
   }
 
-  // TODO: restore update();
+  grid.set(getGrid($dice, $seed));
 }
 
 export function cellKeyDown(event) {

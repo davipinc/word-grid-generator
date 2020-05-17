@@ -97,7 +97,7 @@ textarea {
 </script>
 
 <section class="options">
-	<label>Seed: <input type="text" class="seed" bind:value={$seed} spellcheck="false" autocomplete="false" on:keydown={event => seedKeyDown(event)}></label>
+	<label>Seed: <input type="text" class="seed" bind:value={$seed} spellcheck="false" autocomplete="false" on:keydown={event => seedKeyDown(event, $dice, $seed)}></label>
 	<button on:click={() => getGameFromCurrentTime($dice)}>Current</button>
 	<button on:click={() => getGameFromRandomWords($dice)}>Random</button>
 </section>

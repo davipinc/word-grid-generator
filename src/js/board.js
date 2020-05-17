@@ -41,45 +41,52 @@ function getLocation(row, col) {
   return `${row}:${col}`;
 }
 
-export function updateLocation(location, value) {
+export function updateLocation(newLoc, value) {
   board.update(board => {
     if (value === undefined || value === null) {
-      delete board[location];
+      delete board[newLoc];
     } else {
-      board[location] = value;
+      board[newLoc] = value;
     }
     return board;
   });
 
   tabIndexes.update(tabIndexMap => {
     console.log('tabIndexMap', tabIndexMap);
-    Object.keys(tabIndexMap).forEach( location => {
-      tabIndexMap[location] = 0;
-    });
+
+    const HIDDEN = -1;
+
+    // set everything to invisible to keyboard and ARIA (via -1 setting aria-hidden rule in HTML)
     for (let r = 0; r < maxRows; r += 1) {
       for (let c = 0; c < maxCols; c += 1) {
-        tabIndexMap[getLocation(r,c)] = -1;
+        tabIndexMap[getLocation(r,c)] = HIDDEN;
       }  
     }
     
     const tabIndexArray = [
-      getLocation( row(location),  col(location)), // SELECTED
-      getLocation( row(location)-1, col(location)-1), // NORTHWEST
-      getLocation( row(location)-1,  col(location)), // NORTH
-      getLocation( row(location)-1, col(location)+1), // NORTHEAST
-      getLocation( row(location), col(location)+1), // EAST
-      getLocation( row(location)+1, col(location)+1), // SOUTHEAST
-      getLocation( row(location)+1, col(location)), // SOUTH
-      getLocation( row(location)+1, col(location)-1), // SOUTHWEST
-      getLocation( row(location), col(location)-1) // WEST
+      getLocation( row(newLoc),  col(newLoc)), // SELECTED
+      getLocation( row(newLoc)-1, col(newLoc)-1), // NORTHWEST
+      getLocation( row(newLoc)-1,  col(newLoc)), // NORTH
+      getLocation( row(newLoc)-1, col(newLoc)+1), // NORTHEAST
+      getLocation( row(newLoc), col(newLoc)+1), // EAST
+      getLocation( row(newLoc)+1, col(newLoc)+1), // SOUTHEAST
+      getLocation( row(newLoc)+1, col(newLoc)), // SOUTH
+      getLocation( row(newLoc)+1, col(newLoc)-1), // SOUTHWEST
+      getLocation( row(newLoc), col(newLoc)-1) // WEST
     ].filter( item => item !== '');
 
     tabIndexMap['action:cancel'] = 1;
     tabIndexMap['action:add'] = 2;
 
     const BUTTON_MAX_INDEX = 3;
-    tabIndexArray.forEach((location, i) => {
-      tabIndexMap[location] = i + BUTTON_MAX_INDEX;
+    tabIndexArray.forEach((loc, i) => {
+      if (board[loc] && newLoc !== loc) {
+        // don't show currently selected (except the last letter)
+        tabIndexMap[loc] = HIDDEN;
+      } else {
+        // show all valid placements, and the buttons
+        tabIndexMap[loc] = i + BUTTON_MAX_INDEX;
+      }
     });
     
     return tabIndexMap;
@@ -93,31 +100,31 @@ function getMap($board) {
 export function toggleLetter(event, $board) {
   const element = event.srcElement;
   const letter = element.innerText;
-  const location = element.dataset.location;
+  const loc = element.dataset.location;
   const elementsSelected = getMap($board).length;
-  const cellAlreadyLit = !!$board[location];
+  const cellAlreadyLit = !!$board[loc];
   
   // apply rules
   if (elementsSelected > 0) {
     const lastElementIndex = elementsSelected-1;
     const lastElementLocation = getMap($board).filter( key => $board[key].index === lastElementIndex)[0];
-    const withinOneRow = row(lastElementLocation) === row(location) || row(lastElementLocation) === row(location) + 1 || row(lastElementLocation) === row(location) - 1;
-    const withinOneCol = col(lastElementLocation) === col(location) || col(lastElementLocation) === col(location) + 1 || col(lastElementLocation) === col(location) - 1;
+    const withinOneRow = row(lastElementLocation) === row(loc) || row(lastElementLocation) === row(loc) + 1 || row(lastElementLocation) === row(loc) - 1;
+    const withinOneCol = col(lastElementLocation) === col(loc) || col(lastElementLocation) === col(loc) + 1 || col(lastElementLocation) === col(loc) - 1;
 
     if (!withinOneRow || !withinOneCol) {
-      console.warn('Not a valid move', lastElementLocation, location);
+      console.warn('Not a valid move', lastElementLocation, loc);
       return;
     }
 
-    if (cellAlreadyLit && $board[location].index !== lastElementIndex) {
+    if (cellAlreadyLit && $board[loc].index !== lastElementIndex) {
       console.warn('Can only remove the last chosen letter');
       return;
     }
   }
 
   if (cellAlreadyLit){
-    updateLocation(location, null);
+    updateLocation(loc, null);
   } else {
-    updateLocation(location, { letter, index: elementsSelected });
+    updateLocation(loc, { letter, index: elementsSelected });
   }
 }
