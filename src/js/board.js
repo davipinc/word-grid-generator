@@ -3,7 +3,8 @@ import { row, col } from './util.js';
 
 const maxRows = 4;
 const maxCols = 4;
-
+export const BUTTON_MAX_INDEX = 3;
+    
 export function clearWord() {
   tabIndexes.set({});
   board.set({});
@@ -42,7 +43,7 @@ function getLocation(row, col) {
 }
 
 export function updateLocation(newLoc, value) {
-  let boardMap;
+  let boardMap = {};
   console.info('Selected', newLoc, value);
 
   board.update(board => {
@@ -58,15 +59,30 @@ export function updateLocation(newLoc, value) {
   tabIndexes.update(tabIndexMap => {
     console.log('tabIndexMap', tabIndexMap);
 
+    let defaultIndexValue;
+    const SHOWN_UNORDERED = 0;
     const HIDDEN = -1;
+    const anySelected = Object.keys(boardMap).length > 0;
+
+    if (anySelected) {
+      defaultIndexValue = HIDDEN;
+    } else {
+      defaultIndexValue = SHOWN_UNORDERED;
+    }
+    
 
     // set everything to invisible to keyboard and ARIA (via -1 setting aria-hidden rule in HTML)
     for (let r = 0; r < maxRows; r += 1) {
       for (let c = 0; c < maxCols; c += 1) {
-        tabIndexMap[getLocation(r,c)] = HIDDEN;
+        tabIndexMap[getLocation(r,c)] = defaultIndexValue;
       }  
     }
-    
+
+    if (!anySelected) {
+      return tabIndexMap;
+    }
+  
+    // set tabindexes for the possible plays (letters adjacent to current selection)
     const tabIndexArray = [
       getLocation( row(newLoc),  col(newLoc)), // SELECTED
       getLocation( row(newLoc)-1, col(newLoc)-1), // NORTHWEST
@@ -82,7 +98,6 @@ export function updateLocation(newLoc, value) {
     tabIndexMap['action:cancel'] = 1;
     tabIndexMap['action:add'] = 2;
 
-    const BUTTON_MAX_INDEX = 3;
     tabIndexArray.forEach((loc, i) => {
       console.log('loc',i, boardMap[loc], newLoc, loc);
       console.info('boardMap', boardMap);
@@ -129,8 +144,10 @@ export function toggleLetter(event, $board) {
   }
 
   if (cellAlreadyLit){
+    // remove letter
     updateLocation(loc, null);
   } else {
+    // add letter
     updateLocation(loc, { letter, index: elementsSelected });
   }
 }
