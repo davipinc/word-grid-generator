@@ -112,7 +112,7 @@ textarea {
 			data-location="{rowIndex + ':' + cellIndex}"
 			role="button"
 			tabindex="{$tabIndexes[rowIndex + ':' + cellIndex] || 0}"
-			aria-label="{getLetter(cell).toLowerCase() + ' ' + ($tabIndexes[rowIndex + ':' + cellIndex] === BUTTON_MAX_INDEX ? '(last letter selected)' : '(click to add)')}"
+			aria-label="{getLetter(cell).toLowerCase() + ' ' + ($tabIndexes[rowIndex + ':' + cellIndex] === BUTTON_MAX_INDEX ? '(last letter selected)' : '')}"
 			aria-hidden="{$tabIndexes[rowIndex + ':' + cellIndex] === -1}"
 			on:click={event => toggleLetter(event, $board)}
 			on:keydown={event => cellKeyDown(event)}>
