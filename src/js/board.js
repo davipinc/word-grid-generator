@@ -1,5 +1,6 @@
 import { words, board, grid } from './stores.js';
 import { getGrid } from './grid.js';
+import { row, col } from './util.js';
 
 export function reset() {
   words.set('');
@@ -50,4 +51,40 @@ export function updateLocation(location, value) {
     }
     return board;
   });
+}
+
+function getMap($board) {
+  return Object.keys($board).filter( key => $board[key] !== undefined)		
+}
+
+export function toggleLetter(event, $board) {
+  const element = event.srcElement;
+  const letter = element.innerText;
+  const location = element.dataset.location;
+  const elementsSelected = getMap($board).length;
+  const cellAlreadyLit = !!$board[location];
+  
+  // apply rules
+  if (elementsSelected > 0) {
+    const lastElementIndex = elementsSelected-1;
+    const lastElementLocation = getMap($board).filter( key => $board[key].index === lastElementIndex)[0];
+    const withinOneRow = row(lastElementLocation) === row(location) || row(lastElementLocation) === row(location) + 1 || row(lastElementLocation) === row(location) - 1;
+    const withinOneCol = col(lastElementLocation) === col(location) || col(lastElementLocation) === col(location) + 1 || col(lastElementLocation) === col(location) - 1;
+
+    if (!withinOneRow || !withinOneCol) {
+      console.warn('Not a valid move', lastElementLocation, location);
+      return;
+    }
+
+    if (cellAlreadyLit && $board[location].index !== lastElementIndex) {
+      console.warn('Can only remove the last chosen letter');
+      return;
+    }
+  }
+
+  if (cellAlreadyLit){
+    updateLocation(location, null);
+  } else {
+    updateLocation(location, { letter, index: elementsSelected });
+  }
 }

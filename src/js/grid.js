@@ -1,4 +1,7 @@
 import { xmur3, sfc32, shuffleArray } from './rng.js'; 
+import { getTheTime, getWords } from '../js/api.js';
+import { seed, grid } from '../js/stores.js';
+import { update } from '../js/board.js';
 
 const DEFAULT_SEED = 'foobar';
 
@@ -10,7 +13,11 @@ export function getGrid(dice = [], seedString = DEFAULT_SEED) {
 	// Create xmur3 state:
 	const simplerSeedString = simplifyString(seedString);
 	const seed = xmur3(simplerSeedString);
-	
+
+	if (!dice.length) {
+		debugger;
+	}
+
 	// Output four 32-bit hashes to provide the seed for sfc32.
 	const rand = sfc32(seed(), seed(), seed(), seed());
 
@@ -40,4 +47,21 @@ export function getGrid(dice = [], seedString = DEFAULT_SEED) {
 	console.log(arrayOfArrays);
 	
 	return arrayOfArrays;
+}
+	
+export function getGameFromCurrentTime($dice) {
+	getTheTime().then(timeDetails => {
+		const timeRoundedDownTenMinutes = `${timeDetails.utc_datetime.substring(0,15)}0`;
+		console.info('Game Time', timeRoundedDownTenMinutes);
+		seed.set(timeRoundedDownTenMinutes);
+		update($dice, timeRoundedDownTenMinutes);
+	});
+}
+
+export async function getGameFromRandomWords($dice) {
+	// reset();
+	const words = await getWords();
+	const newSeed = words.join(' ');
+	seed.set(newSeed);
+	grid.set(getGrid($dice, newSeed));		
 }

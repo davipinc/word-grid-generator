@@ -99,18 +99,12 @@ textarea {
 
 <script context="module">
 	import { getGrid } from '../js/grid.js';	
-	
-	export async function getWords(self) {
-		const resWords = await fetch('https://random-word-api.herokuapp.com/word?number=1&swear=0');
-		let randomWords = await resWords.json();
-		console.info('Random words: ', randomWords);
-		return randomWords;
-	}
+	import { getWords } from '../js/api.js';	
  
 	export async function preload() {
 		const resDice = await this.fetch(`dice/classic.json`);
 		let diceDefinition = await resDice.json();
-		console.info('Loaded dice: ', diceDefinition);
+		
 		return {
 			diceDefinition
 		}	
@@ -122,89 +116,28 @@ textarea {
 
 	import { words, board, grid, dice, seed } from '../js/stores.js';
 	import { seedKeyDown, cellKeyDown } from '../js/key.js';
-	import { reset, update, clearWord, addWord, updateLocation } from '../js/board.js';
-	import { getLetter, row, col } from '../js/util.js';
+	import { getGameFromCurrentTime, getGameFromRandomWords } from '../js/grid.js';
+	import { reset, update, clearWord, addWord, updateLocation, toggleLetter } from '../js/board.js';
+	import { getLetter } from '../js/util.js';
 	import { logStateUpdates } from '../js/log.js';
-	import { getTheTime } from '../js/api.js';
 
-	logStateUpdates();
-
-	export let randomWords = [];
 	export let diceDefinition;
-
-	seed.set(randomWords.join(' '));
 	dice.set(diceDefinition.dice);
 
 	update($dice, $seed);
 
-
-	async function randomise() {
-		reset();
-		const words = await getWords();
-		console.log(words);
-		seed.set(words.join(' '));
-		grid.set(getGrid($dice, $seed));		
-	}
-
-
-	function getMap() {
-		return Object.keys($board).filter( key => $board[key] !== undefined)		
-	}
-
-	export function toggleLetter(event) {
-		const element = event.srcElement;
-		const letter = element.innerText;
-		const location = element.dataset.location;
-		const elementsSelected = getMap().length;
-		const cellAlreadyLit = !!$board[location];
-		
-		// apply rules
-		if (elementsSelected > 0) {
-			const lastElementIndex = elementsSelected-1;
-			const lastElementLocation = getMap().filter( key => $board[key].index === lastElementIndex)[0];
-			const withinOneRow = row(lastElementLocation) === row(location) || row(lastElementLocation) === row(location) + 1 || row(lastElementLocation) === row(location) - 1;
-			const withinOneCol = col(lastElementLocation) === col(location) || col(lastElementLocation) === col(location) + 1 || col(lastElementLocation) === col(location) - 1;
-
-			if (!withinOneRow || !withinOneCol) {
-				console.warn('Not a valid move', lastElementLocation, location);
-				return;
-			}
-
-			if (cellAlreadyLit && $board[location].index !== lastElementIndex) {
-				console.warn('Can only remove the last chosen letter');
-				return;
-			}
-		}
-
-		if (cellAlreadyLit){
-			updateLocation(location, null);
-		} else {
-			updateLocation(location, { letter, index: elementsSelected });
-		}
-
-		console.log($board);
-	}
-	
-	function getGameFromCurrentTime() {
-		getTheTime().then(timeDetails => {
-			const timeRoundedDownTenMinutes = `${timeDetails.utc_datetime.substring(0,15)}0`;
-			console.info('Game Time', timeRoundedDownTenMinutes);
-			seed.set(timeRoundedDownTenMinutes);
-			update($dice, timeRoundedDownTenMinutes);
-		});
-	}
-
 	onMount(async () => {
 		reset();
-		getGameFromCurrentTime();
+		logStateUpdates();
+		getGameFromCurrentTime($dice);
 	});
 	
 </script>
 
 <section class="options">
 	<label>Seed: <input type="text" class="seed" bind:value={$seed} spellcheck="false" autocomplete="false" on:keydown={event => seedKeyDown(event)}></label>
-	<button on:click={getGameFromCurrentTime}>Current</button>
-	<button on:click={randomise}>Random</button>
+	<button on:click={() => getGameFromCurrentTime($dice)}>Current</button>
+	<button on:click={() => getGameFromRandomWords($dice)}>Random</button>
 </section>
 
 <section class="wrapper">
@@ -217,7 +150,7 @@ textarea {
 			data-location="{rowIndex + ':' + cellIndex}"
 			role="button"
 			aria-label="{getLetter(cell).toLowerCase()}"
-			on:click={value => toggleLetter(value)}
+			on:click={event => toggleLetter(event, $board)}
 			on:keydown={event => cellKeyDown(event)}>
 			{getLetter(cell)}
 		</button>
