@@ -1,7 +1,8 @@
 import { xmur3, sfc32, shuffleArray } from './rng.js'; 
-import { getDice, getTheTime, getWords } from '../js/api.js';
-import { words, board, seed, grid, dice, tabIndexes } from '../js/stores.js';
-import { logStateUpdates } from '../js/log.js';
+import { getTheTime, getWords } from './api.js';
+import { getDice } from './data.js';
+import { words, board, seed, grid, dice, tabIndexes } from './stores.js';
+import { logStateUpdates } from './log.js';
 
 const DEFAULT_SEED = 'foobar';
 
