@@ -9,7 +9,6 @@ export async function init () {
 	logStateUpdates();
 	getDice('classic').then( diceDefinition => {
 		dice.set(diceDefinition.dice);
-		// update($dice, $seed);
 		getGameFromCurrentTime(diceDefinition.dice);
 	});
 }
@@ -19,10 +18,6 @@ export function reset() {
   board.set({});
 	grid.set([]);
 	tabIndexes.set({});
-}
-
-export function update($dice, $seed) {
-  grid.set(getGrid($dice, $seed));
 }
 
 function simplifyString(seedString) {
@@ -74,7 +69,6 @@ export function getGameFromCurrentTime($dice) {
 		console.info('Game Time', timeRoundedDownTenMinutes);
 		seed.set(timeRoundedDownTenMinutes);
 		grid.set(getGrid($dice, timeRoundedDownTenMinutes));
-		// update($dice, timeRoundedDownTenMinutes);
 	});
 }
 
@@ -84,5 +78,4 @@ export async function getGameFromRandomWords($dice) {
 	const newSeed = words.join(' ');
 	seed.set(newSeed);
 	grid.set(getGrid($dice, newSeed));
-	// update($dice, newSeed);
 }

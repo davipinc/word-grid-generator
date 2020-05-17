@@ -88,7 +88,7 @@ textarea {
 
 	import { words, board, grid, dice, seed, tabIndexes } from '../js/stores.js';
 	import { seedKeyDown, cellKeyDown } from '../js/key.js';
-	import { init, reset, update, getGameFromCurrentTime, getGameFromRandomWords } from '../js/game.js';
+	import { init, reset, getGameFromCurrentTime, getGameFromRandomWords } from '../js/game.js';
 	import { clearWord, addWord, updateLocation, toggleLetter } from '../js/board.js';
 	import { getLetter } from '../js/util.js';
 
