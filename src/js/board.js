@@ -1,16 +1,5 @@
-import { words, board, grid } from './stores.js';
-import { getGrid } from './grid.js';
+import { words, board } from './stores.js';
 import { row, col } from './util.js';
-
-export function reset() {
-  words.set('');
-  board.set({});
-  grid.set([]);		
-}
-
-export function update($dice, $seed) {
-  grid.set(getGrid($dice, $seed));
-}
 
 export function clearWord() {
   board.set({});

@@ -4,8 +4,6 @@
 
 <style>
 
-/* https://gridbyexample.com/examples/example17/ */
-
 .options {
 	margin-bottom:1em;
 }
@@ -39,11 +37,6 @@
 .button:hover {
 	opacity: 0.8;
 }
-/* 
-.button:focus {
-	background-color: #02517c;
-	color: honeydew;
-} */
 
 .button {
 	font-size: 4vmax;
@@ -57,13 +50,6 @@
 	background-color: #f44336;
 	color: white;
 }
-
-
-/* .cell:nth-child(even) {
-
-} */
-
-
 
 .wrapper {
 	width: 90%;
@@ -97,40 +83,16 @@ textarea {
 
 </style>
 
-<script context="module">
-	import { getGrid } from '../js/grid.js';	
-	import { getWords } from '../js/api.js';	
- 
-	export async function preload() {
-		const resDice = await this.fetch(`dice/classic.json`);
-		let diceDefinition = await resDice.json();
-		
-		return {
-			diceDefinition
-		}	
-	}
-</script>
-
 <script>
 	import { onMount } from 'svelte';
 
 	import { words, board, grid, dice, seed } from '../js/stores.js';
 	import { seedKeyDown, cellKeyDown } from '../js/key.js';
-	import { getGameFromCurrentTime, getGameFromRandomWords } from '../js/grid.js';
-	import { reset, update, clearWord, addWord, updateLocation, toggleLetter } from '../js/board.js';
+	import { init, reset, update, getGameFromCurrentTime, getGameFromRandomWords } from '../js/game.js';
+	import { clearWord, addWord, updateLocation, toggleLetter } from '../js/board.js';
 	import { getLetter } from '../js/util.js';
-	import { logStateUpdates } from '../js/log.js';
 
-	export let diceDefinition;
-	dice.set(diceDefinition.dice);
-
-	update($dice, $seed);
-
-	onMount(async () => {
-		reset();
-		logStateUpdates();
-		getGameFromCurrentTime($dice);
-	});
+	onMount(init);
 	
 </script>
 
@@ -163,10 +125,6 @@ textarea {
 
 </section>
 
-
 <section class="words">
 	<textarea aria-label="Your word list" bind:value={$words} placeholder="Your words" autocompete="false"></textarea>
 </section>
-
-<!-- <input value={JSON.stringify($board['0:0'])}>
-<input value={JSON.stringify($board)}> -->

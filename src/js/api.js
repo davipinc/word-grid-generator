@@ -1,4 +1,10 @@
 
+export async function getDice(type = 'classic') {
+  const resDice = await fetch(`/dice/${type}.json`);
+  let diceDefinition = await resDice.json();
+  return diceDefinition;
+}
+
 export async function getTheTime() {
   const res = await fetch(`https://worldtimeapi.org/api/timezone/Europe/London`);
   const timeDetails = await res.json();

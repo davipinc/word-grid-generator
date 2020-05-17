@@ -1,9 +1,28 @@
 import { xmur3, sfc32, shuffleArray } from './rng.js'; 
-import { getTheTime, getWords } from '../js/api.js';
-import { seed, grid } from '../js/stores.js';
-import { update } from '../js/board.js';
+import { getDice, getTheTime, getWords } from '../js/api.js';
+import { words, board, seed, grid, dice } from '../js/stores.js';
+import { logStateUpdates } from '../js/log.js';
 
 const DEFAULT_SEED = 'foobar';
+
+export async function init () {
+	logStateUpdates();
+	getDice('classic').then( diceDefinition => {
+		dice.set(diceDefinition.dice);
+		// update($dice, $seed);
+		getGameFromCurrentTime(diceDefinition.dice);
+	});
+}
+
+export function reset() {
+  words.set('');
+  board.set({});
+  grid.set([]);		
+}
+
+export function update($dice, $seed) {
+  grid.set(getGrid($dice, $seed));
+}
 
 function simplifyString(seedString) {
 	return seedString.toLowerCase().replace(/\s+/g, '-');
@@ -44,7 +63,6 @@ export function getGrid(dice = [], seedString = DEFAULT_SEED) {
 	for (let i=0; i < rolledDice.length; i+=ROW_SIZE) {
 		arrayOfArrays.push(rolledDice.slice(i,i+ROW_SIZE));
 	}
-	console.log(arrayOfArrays);
 	
 	return arrayOfArrays;
 }
