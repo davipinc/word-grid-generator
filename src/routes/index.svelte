@@ -33,10 +33,10 @@
 </style>
 
 <svelte:head>
-	<title>Sapper project template</title>
+	<title>Word grid generator</title>
 </svelte:head>
 
-<h1>Gridwords</h1>
+<h1>Word grid</h1>
 
 <figure>
 	<img alt='1980s Dictionary' src='dictionary.jpg'>
