@@ -120,63 +120,25 @@ textarea {
 <script>
 	import { words, board, grid, dice, seed } from '../js/stores.js';
 	import { seedKeyDown, cellKeyDown } from '../js/key.js';
-	import { reset } from '../js/board.js';
+	import { reset, clearWord, addWord } from '../js/board.js';
 	import { getLetter } from '../js/util.js';
+	import { logStateUpdates } from '../js/log.js';
+
+	logStateUpdates();
 
 	export function update() {
 		grid.set(getGrid($dice, $seed));
 	}
 
-	words.subscribe(value => {
-		console.info('Updated words:', value);
-	});
-	
-	board.subscribe(value => {
-		console.info('Updated board:', value);
-	});
-	
-	dice.subscribe(value => {
-		console.info('Updated dice:', value);
-	});
-
 	export let randomWords = [];
 	export let diceDefinition;
+
 	seed.set(randomWords.join(' '));
 
 	dice.set(diceDefinition.dice);
 
 	update();
 
-	export function clearWord() {
-		board.set({});
-	}
-
-
-	function getCurrentWord() {
-		return Object.keys($board).map( key => $board[key].letter ).join('');
-	}
-
-	function addWord() {
-		const currentWord = getCurrentWord();
-		const SPACER = ', ';
-		if (!currentWord){
-			return;
-		}
-
-		words.update(contents => {
-			const alreadyLogged = contents === currentWord || contents.indexOf(SPACER + currentWord) >= 0;
-		
-			if (alreadyLogged) {
-				console.info('Already found', currentWord);
-				return;
-			}
-
-			return contents + (contents.length ? SPACER : '') + currentWord.toUpperCase();
-		});
-
-
-		clearWord();
-	}
 
 	function updateLocation(location, value) {
 		board.update(board => {
@@ -294,7 +256,7 @@ textarea {
 	{/each}
 
 	<button class="button action action-left cancel" role="button" aria-label="Cancel word" on:click={clearWord}>Cancel</button>
-	<button class="button action action-right add" role="button" aria-label="Add word" on:click={addWord}>Add</button>
+	<button class="button action action-right add" role="button" aria-label="Add word" on:click={() => addWord($board)}>Add</button>
 
 </section>
 
