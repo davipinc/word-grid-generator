@@ -24,6 +24,7 @@ export default {
 				'process.browser': true,
 				'process.env.NODE_ENV': JSON.stringify(mode)
 			}),
+			json(),
 			svelte({
 				dev,
 				hydratable: true,
@@ -68,6 +69,7 @@ export default {
 				'process.browser': false,
 				'process.env.NODE_ENV': JSON.stringify(mode)
 			}),
+			json(),
 			svelte({
 				generate: 'ssr',
 				dev
@@ -75,8 +77,7 @@ export default {
 			resolve({
 				dedupe: ['svelte']
 			}),
-			commonjs(),
-			json()
+			commonjs()
 		],
 		external: Object.keys(pkg.dependencies).concat(
 			require('module').builtinModules || Object.keys(process.binding('natives'))
