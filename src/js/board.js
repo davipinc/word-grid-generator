@@ -42,12 +42,16 @@ function getLocation(row, col) {
 }
 
 export function updateLocation(newLoc, value) {
+  let boardMap;
+  console.info('Selected', newLoc, value);
+
   board.update(board => {
     if (value === undefined || value === null) {
       delete board[newLoc];
     } else {
       board[newLoc] = value;
     }
+    boardMap = Object.assign({}, board);
     return board;
   });
 
@@ -80,7 +84,9 @@ export function updateLocation(newLoc, value) {
 
     const BUTTON_MAX_INDEX = 3;
     tabIndexArray.forEach((loc, i) => {
-      if (board[loc] && newLoc !== loc) {
+      console.log('loc',i, boardMap[loc], newLoc, loc);
+      console.info('boardMap', boardMap);
+      if (boardMap[loc] && newLoc !== loc) {
         // don't show currently selected (except the last letter)
         tabIndexMap[loc] = HIDDEN;
       } else {

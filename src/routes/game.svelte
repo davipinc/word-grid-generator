@@ -98,8 +98,8 @@ textarea {
 
 <section class="options">
 	<label>Seed: <input type="text" class="seed" bind:value={$seed} spellcheck="false" autocomplete="false" on:keydown={event => seedKeyDown(event, $dice, $seed)}></label>
-	<button on:click={() => getGameFromCurrentTime($dice)}>Current</button>
-	<button on:click={() => getGameFromRandomWords($dice)}>Random</button>
+	<button on:click={() => getGameFromCurrentTime($dice)} aria-label="Reset the board: use the currently active board">Current</button>
+	<button on:click={() => getGameFromRandomWords($dice)} aria-label="Reset the board: create a random board">Random</button>
 </section>
 
 <section class="wrapper">
