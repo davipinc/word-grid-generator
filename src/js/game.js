@@ -1,6 +1,6 @@
 import { xmur3, sfc32, shuffleArray } from './rng.js'; 
 import { getDice, getTheTime, getWords } from '../js/api.js';
-import { words, board, seed, grid, dice } from '../js/stores.js';
+import { words, board, seed, grid, dice, tabIndexes } from '../js/stores.js';
 import { logStateUpdates } from '../js/log.js';
 
 const DEFAULT_SEED = 'foobar';
@@ -17,7 +17,8 @@ export async function init () {
 export function reset() {
   words.set('');
   board.set({});
-  grid.set([]);		
+	grid.set([]);
+	tabIndexes.set({});
 }
 
 export function update($dice, $seed) {

@@ -1,7 +1,11 @@
-import { words, board } from './stores.js';
+import { words, board, tabIndexes } from './stores.js';
 import { row, col } from './util.js';
 
+const maxRows = 4;
+const maxCols = 4;
+
 export function clearWord() {
+  tabIndexes.set({});
   board.set({});
 }
 
@@ -31,15 +35,48 @@ export function addWord($board) {
   clearWord();
 }
 
+function getLocation(row, col) {
+  if (row < 0 || row > maxRows-1) {return '';}
+  if (col < 0 || col > maxCols-1) {return '';}
+  return `${row}:${col}`;
+}
+
 export function updateLocation(location, value) {
   board.update(board => {
-    if (!value) {
+    if (value === undefined || value === null) {
       delete board[location];
     } else {
       board[location] = value;
     }
     return board;
   });
+
+  tabIndexes.update(tabIndexMap => {
+    console.log('tabIndexMap', tabIndexMap);
+    const board = {};
+    
+    const tabIndexArray = [
+      getLocation( row(location),  col(location)), // SELECTED
+      getLocation( row(location)-1, col(location)-1), // NORTHWEST
+      getLocation( row(location)-1,  col(location)), // NORTH
+      getLocation( row(location)-1, col(location)+1), // NORTHEAST
+      getLocation( row(location), col(location)+1), // EAST
+      getLocation( row(location)+1, col(location)+1), // SOUTHEAST
+      getLocation( row(location)+1, col(location)), // SOUTH
+      getLocation( row(location)+1, col(location)-1), // SOUTHWEST
+      getLocation( row(location), col(location)-1) // WEST
+    ].filter( item => item !== '');
+
+    tabIndexMap['action:cancel'] = 1;
+    tabIndexMap['action:add'] = 2;
+
+    const BUTTON_MAX_INDEX = 3;
+    tabIndexArray.forEach((location, i) => {
+      tabIndexMap[location] = i + BUTTON_MAX_INDEX;
+    });
+    
+    return tabIndexMap;
+  });  
 }
 
 function getMap($board) {

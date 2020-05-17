@@ -86,7 +86,7 @@ textarea {
 <script>
 	import { onMount } from 'svelte';
 
-	import { words, board, grid, dice, seed } from '../js/stores.js';
+	import { words, board, grid, dice, seed, tabIndexes } from '../js/stores.js';
 	import { seedKeyDown, cellKeyDown } from '../js/key.js';
 	import { init, reset, update, getGameFromCurrentTime, getGameFromRandomWords } from '../js/game.js';
 	import { clearWord, addWord, updateLocation, toggleLetter } from '../js/board.js';
@@ -111,6 +111,7 @@ textarea {
 			class="button cell {$board[rowIndex + ':' + cellIndex] ? 'chosen' : '' }"
 			data-location="{rowIndex + ':' + cellIndex}"
 			role="button"
+			tabindex="{$tabIndexes[rowIndex + ':' + cellIndex] || 0}"
 			aria-label="{getLetter(cell).toLowerCase()}"
 			on:click={event => toggleLetter(event, $board)}
 			on:keydown={event => cellKeyDown(event)}>
@@ -120,8 +121,8 @@ textarea {
 	
 	{/each}
 
-	<button class="button action action-left cancel" role="button" aria-label="Cancel word" on:click={clearWord}>Cancel</button>
-	<button class="button action action-right add" role="button" aria-label="Add word" on:click={() => addWord($board)}>Add</button>
+	<button class="button action action-left cancel" tabindex="{$tabIndexes['action:cancel'] || 0}}" role="button" aria-label="Cancel word" on:click={clearWord}>Cancel</button>
+	<button class="button action action-right add" tabindex="{$tabIndexes['action:add'] || 0}}" role="button" aria-label="Add word" on:click={() => addWord($board)}>Add</button>
 
 </section>
 
