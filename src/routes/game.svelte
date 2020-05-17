@@ -174,7 +174,7 @@ textarea {
 			return;
 		}
 
-		allWords = allWords + (allWords ? SPACER : '') + currentWord;
+		allWords = allWords + (allWords ? SPACER : '') + currentWord.toUpperCase();
 		clearWord();
 	}
 
