@@ -118,9 +118,14 @@ textarea {
 </script>
 
 <script>
-	import { words, board } from '../js/stores.js';
+	import { words, board, grid, dice, seed } from '../js/stores.js';
+	import { seedKeyDown, cellKeyDown } from '../js/key.js';
 	import { reset } from '../js/board.js';
 	import { getLetter } from '../js/util.js';
+
+	export function update() {
+		grid.set(getGrid($dice, $seed));
+	}
 
 	words.subscribe(value => {
 		console.info('Updated words:', value);
@@ -129,26 +134,18 @@ textarea {
 	board.subscribe(value => {
 		console.info('Updated board:', value);
 	});
-
-	import { writable, derived } from 'svelte/store';
+	
+	dice.subscribe(value => {
+		console.info('Updated dice:', value);
+	});
 
 	export let randomWords = [];
 	export let diceDefinition;
-	export let seed = randomWords.join(' ');
+	seed.set(randomWords.join(' '));
 
-	export let grid = getGrid(diceDefinition.dice, seed);
+	dice.set(diceDefinition.dice);
 
-	function seedKeyDown(event) {
-		if (event.code ==='Enter') {
-			event.preventDefault();
-		}
-
-		update();
-	}
-
-	function cellKeyDown(event) {
-		console.log(event.code);
-	}
+	update();
 
 	export function clearWord() {
 		board.set({});
@@ -196,12 +193,8 @@ textarea {
 		reset();
 		const words = await getWords();
 		console.log(words);
-		seed = words.join(' ');
-		grid = getGrid(diceDefinition.dice, seed)		
-	}
-
-	function update() {
-		grid = getGrid(diceDefinition.dice, seed);
+		seed.set(words.join(' '));
+		grid.set(getGrid($dice, $seed));		
 	}
 
 	function row(location) {
@@ -264,7 +257,7 @@ textarea {
 		getTheTime().then(timeDetails => {
 			const timeRoundedDownTenMinutes = `${timeDetails.utc_datetime.substring(0,15)}0`;
 			console.info('Game Time', timeRoundedDownTenMinutes);
-			seed = timeRoundedDownTenMinutes;
+			seed.set(timeRoundedDownTenMinutes);
 			update();
 		});
 	}
@@ -277,14 +270,14 @@ textarea {
 </script>
 
 <section class="options">
-	<label>Seed: <input type="text" class="seed" bind:value={seed} spellcheck="false" autocomplete="false" on:keydown={event => seedKeyDown(event)}></label>
+	<label>Seed: <input type="text" class="seed" bind:value={$seed} spellcheck="false" autocomplete="false" on:keydown={event => seedKeyDown(event)}></label>
 	<button on:click={getGameFromCurrentTime}>Current</button>
 	<button on:click={randomise}>Random</button>
 </section>
 
 <section class="wrapper">
 
-	{#each grid as row, rowIndex}
+	{#each $grid as row, rowIndex}
 
 		{#each row as cell, cellIndex}
 		<button 
