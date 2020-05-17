@@ -118,34 +118,25 @@ textarea {
 </script>
 
 <script>
+	import { onMount } from 'svelte';
+
 	import { words, board, grid, dice, seed } from '../js/stores.js';
 	import { seedKeyDown, cellKeyDown } from '../js/key.js';
-	import { reset, update, clearWord, addWord } from '../js/board.js';
-	import { getLetter } from '../js/util.js';
+	import { reset, update, clearWord, addWord, updateLocation } from '../js/board.js';
+	import { getLetter, row, col } from '../js/util.js';
 	import { logStateUpdates } from '../js/log.js';
+	import { getTheTime } from '../js/api.js';
 
 	logStateUpdates();
-
 
 	export let randomWords = [];
 	export let diceDefinition;
 
 	seed.set(randomWords.join(' '));
-
 	dice.set(diceDefinition.dice);
 
 	update($dice, $seed);
 
-	function updateLocation(location, value) {
-		board.update(board => {
-			if (!value) {
-				delete board[location];
-			} else {
-				board[location] = value;
-			}
-			return board;
-		});
-	}
 
 	async function randomise() {
 		reset();
@@ -155,15 +146,6 @@ textarea {
 		grid.set(getGrid($dice, $seed));		
 	}
 
-	function row(location) {
-		if (!location) {return -1;}
-		return parseInt(location.split(':')[0], 10);
-	}
-
-	function col(location) {
-		if (!location) {return -1;}
-		return parseInt(location.split(':')[1], 10);
-	}
 
 	function getMap() {
 		return Object.keys($board).filter( key => $board[key] !== undefined)		
@@ -201,14 +183,6 @@ textarea {
 		}
 
 		console.log($board);
-	}
-
-	import { onMount } from 'svelte';
-
-	async function getTheTime() {
-		const res = await fetch(`https://worldtimeapi.org/api/timezone/Europe/London`);
-		const timeDetails = await res.json();
-		return timeDetails;
 	}
 	
 	function getGameFromCurrentTime() {

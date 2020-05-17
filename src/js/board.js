@@ -40,3 +40,14 @@ export function addWord($board) {
 
   clearWord();
 }
+
+export function updateLocation(location, value) {
+  board.update(board => {
+    if (!value) {
+      delete board[location];
+    } else {
+      board[location] = value;
+    }
+    return board;
+  });
+}
