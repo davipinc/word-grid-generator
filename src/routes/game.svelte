@@ -111,7 +111,6 @@ textarea {
 			class="button cell {$board[rowIndex + ':' + cellIndex] ? 'chosen' : '' }"
 			data-location="{rowIndex + ':' + cellIndex}"
 			role="button"
-			tabindex="{$tabIndexes[rowIndex + ':' + cellIndex] || 0}"
 			aria-label="{
 					'Letter ' + getLetter(cell).toLowerCase() + ' ' + 
 					($board[rowIndex + ':' + cellIndex] && $tabIndexes[rowIndex + ':' + cellIndex] === BUTTON_MAX_INDEX ? '(last letter selected)' : '') + '. ' + 
