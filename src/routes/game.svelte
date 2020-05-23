@@ -112,7 +112,7 @@ textarea {
 			data-location="{rowIndex + ':' + cellIndex}"
 			role="button"
 			aria-label="{
-					'Letter ' + getLetter(cell).toLowerCase() + ' ' + 
+					getLetter(cell).toLowerCase() + ' ' + 
 					($board[rowIndex + ':' + cellIndex] && $tabIndexes[rowIndex + ':' + cellIndex] === BUTTON_MAX_INDEX ? '(last letter selected)' : '') + '. ' + 
 					(getCurrentWord($board).length <= 1 ? '' : 
 							' Letters are ' + getCurrentWord($board).split('').join('. ') + '. Word is ' + getCurrentWord($board).toLowerCase()
