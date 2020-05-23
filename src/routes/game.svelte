@@ -40,6 +40,8 @@
 
 .button {
 	font-size: 4vmax;
+	width:23%;
+	margin:1%;
 }
 .add {
 	background-color: #4caf50;
@@ -52,23 +54,24 @@
 }
 
 .wrapper {
-	width: 90%;
-	display: grid;
+	width: 100%;
+	/* display: grid;
 	grid-gap: 1%;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
-	grid-template-rows: 1fr 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr 1fr; */
 }
 
 .action {
-  grid-row: 5; 
+	width:47%;
+  /* grid-row: 5;  */
 }
 
 .action-left {
-  grid-column: 1/3; 
+  /* grid-column: 1/3;  */
 }
 
 .action-right {
-  grid-column: 3/5; 
+  /* grid-column: 3/5;  */
 }
 
 .words {
